@@ -1,5 +1,9 @@
 {
   "name": "@errozero/beatstepper",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/errozero/beatstepper"
+  },
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
