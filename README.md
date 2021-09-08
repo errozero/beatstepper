@@ -26,7 +26,7 @@ Now that is setup, call the start method to begin scheduling:
 beatstepper.start()
 ```
 
-This will run the default tempo of 130bpm, with 4/4 time division.
+This will run at the default tempo of 130bpm, with 4/4 time division.
 
 Your callback function will run on every step and receive an object with the following structure:
 ```typescript
@@ -92,7 +92,7 @@ beatstepper.setBeatsPerBar(4);
 ```javascript
 import  Beatstepper  from  '@errozero/beatstepper';
 
-const ctx = new AudioContext();
+const context = new AudioContext();
 const stepsPerBeat = 4;
 const tempo = 90;
 
