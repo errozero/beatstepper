@@ -110,4 +110,6 @@ const  beatstepper = new  Beatstepper(context, callback);
 
 beatstepper.setTempo(tempo);
 beatstepper.setStepsPerBeat(stepsPerBeat);
+
+beatstepper.start();
 ```
