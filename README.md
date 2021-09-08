@@ -43,25 +43,25 @@ Your callback function will run on every step and receive an object with the fol
 Your callback function could be used to trigger notes or samples from a pattern array etc.
 
 ## Methods
-**start**
+**start**\
 Starts the clock
 ```javascript
 beatstepper.start();
 ```
 \
-**stop**
+**stop**\
 Stops the clock and resets the current step, beat and bar to 0
 ```javascript
 beatstepper.stop();
 ```
 \
-**pause**
+**pause**\
 Pauses the clock
 ```javascript
 beatstepper.pause();
 ```
 \
-**setTempo**
+**setTempo**\
 Sets the tempo in bpm
 
 Param: `tempo:number`
@@ -69,7 +69,7 @@ Param: `tempo:number`
 beatstepper.setTempo(160);
 ```
   \
-**setStepsPerBeat**
+**setStepsPerBeat**\
 Sets the number of steps that make up a beat, default is 4.
 This works together with beatsPerBar to set the timing of the clock.
 It represents the first 4 in **4**/4.
@@ -79,7 +79,7 @@ Param: `steps:number`
 beatstepper.setStepsPerBeat(4);
 ```
 \
-**setBeatsPerBar**
+**setBeatsPerBar**\
 Sets the number of beats that make up a bar.
 This works together with stepPerBeat to set the timing of the clock.
 It represents the second 4 in 4/**4**.
@@ -96,7 +96,7 @@ const ctx = new AudioContext();
 const stepsPerBeat = 4;
 const tempo = 90;
 
-const  callback = (data:IBeatstepperCallbackData) => {
+const  callback = data => {
 	const  freq = (data.step % stepsPerBeat == 0) ? 880 : 440;
 	const  oscillator = context.createOscillator();
 	oscillator.type = 'square';
