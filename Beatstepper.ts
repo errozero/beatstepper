@@ -37,8 +37,8 @@ class Beatstepper {
     private callback: Function;
     
     private tempoWorker: Worker;
-	private scheduleAheadTime = 0.1; //How far ahead to schedule events (in seconds)
-	private lookAhead = 25.0; //How frequently to call scheduling (in ms)
+	private scheduleAheadTime = 0.18; //How far ahead to schedule events (in seconds)
+	private lookAhead = 20.0; //How frequently to call scheduling (in ms)
 	private nextStepTime = 0;
     private currentStep = 0;
     private currentBeat = 0;
@@ -126,7 +126,11 @@ class Beatstepper {
 
     pause(){
         this.playing = false;
-        this.tempoWorker.postMessage({message: 'pause'});
+        this.tempoWorker.postMessage({message: 'stop'});
+    }
+
+    getStepsPerBeat(){
+        return this.stepsPerBeat;
     }
 
     setStepsPerBeat(steps:number){
@@ -134,9 +138,17 @@ class Beatstepper {
         this.setStepLength();
     }
 
+    getBeatsPerBar(){
+        return this.beatsPerBar;
+    }
+
     setBeatsPerBar(beats:number){
         this.beatsPerBar = beats;
         this.setStepLength();
+    }
+
+    getTempo(){
+        return this.tempo;
     }
 
     setTempo(tempo:number){
