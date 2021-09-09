@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/errozero/beatstepper"
   },
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "dist/Beatstepper.js",
   "scripts": {
@@ -15,8 +15,8 @@
   "types": "dist/index.d.ts",
   "prepublish": "tsc",
   "keywords": [
-      "webaudio",
-      "scheduler",
-      "web audio"
+    "webaudio",
+    "scheduler",
+    "web audio"
   ]
 }
