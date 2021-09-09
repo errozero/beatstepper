@@ -1,27 +1,6 @@
 //Based on article: https://html5rocks.com/en/tutorials/audio/scheduling/
 
-//Web Worker as a string, removes the need to provide a url to a worker file, this dynamically creates one
-//https://stackoverflow.com/a/61621269/2347456
-
-const workerCode = `
-    let speed = 100;
-    let timerID = null;
-    onmessage = (e) => {
-        //console.log('MESSAGE', e.data);
-
-        if(e.data.speed) speed = e.data.speed;
-
-        if(e.data.message === 'start'){
-            timerID = setInterval(() => {postMessage('pulse')}, speed);
-        } 
-        else if(e.data.message === 'stop'){
-            clearInterval(timerID);
-            timerID=null;
-        }
-    }
-`;
-
-const workerBlob = new Blob([workerCode], {type: 'application/javascript'})
+import tempoWorker from './worker';
 
 interface IBeatstepperCallbackData {
     step: number,
@@ -37,9 +16,9 @@ class Beatstepper {
     private callback: Function;
     
     private tempoWorker: Worker;
-	private scheduleAheadTime = 0.18; //How far ahead to schedule events (in seconds)
-	private lookAhead = 20.0; //How frequently to call scheduling (in ms)
-	private nextStepTime = 0;
+    private scheduleAheadTime = 0.18; //How far ahead to schedule events (in seconds)
+    private lookAhead = 20.0; //How frequently to call scheduling (in ms)
+    private nextStepTime = 0;
     private currentStep = 0;
     private currentBeat = 0;
     private currentBar = 0;
@@ -55,7 +34,7 @@ class Beatstepper {
         this.callback = callback;
         this.setStepLength();
         
-        this.tempoWorker = new Worker(URL.createObjectURL(workerBlob));
+        this.tempoWorker = tempoWorker;
         this.tempoWorker.postMessage({speed: this.lookAhead});
         this.tempoWorker.onmessage = () => {this.scheduler()};
     }
