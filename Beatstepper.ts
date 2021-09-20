@@ -45,7 +45,7 @@ class Beatstepper {
 
     private scheduler(){
         while(this.nextStepTime < this.context.currentTime + this.scheduleAheadTime ) {
-            //if(!State.playing) return;
+            if(!this.playing) return;
             this.scheduleStep();
             this.nextStep();
         }
