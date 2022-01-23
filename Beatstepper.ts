@@ -133,8 +133,10 @@ class Beatstepper {
     setTempo(tempo:number){
         this.tempo = tempo;
         this.setStepLength();
+    }
 
-        //this.tempoWorker.postMessage({speed});
+    getStepLength(){
+        return this.stepLength;
     }
 
 }
