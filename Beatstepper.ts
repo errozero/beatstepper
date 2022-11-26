@@ -87,6 +87,10 @@ class Beatstepper {
     }
 
     start(){
+        if(this.playing){
+            return;
+        }
+
         this.playing = true;
         this.nextStepTime = this.context.currentTime;
         this.tempoWorker.postMessage({
@@ -96,6 +100,10 @@ class Beatstepper {
     }
 
     stop(){
+        if(!this.playing){
+            return;
+        }
+        
         this.playing = false;
         this.tempoWorker.postMessage({message: 'stop'});
         this.currentStep = 0;
