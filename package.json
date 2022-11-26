@@ -4,7 +4,7 @@
     "type": "git",
     "url": "https://github.com/errozero/beatstepper"
   },
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "",
   "main": "dist/Beatstepper.js",
   "scripts": {
