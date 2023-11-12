@@ -4,16 +4,18 @@
     "type": "git",
     "url": "https://github.com/errozero/beatstepper"
   },
+  "type": "module",
   "version": "1.0.7",
   "description": "",
-  "main": "dist/Beatstepper.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
   "author": "errozero",
   "license": "MIT",
-  "types": "dist/index.d.ts",
   "prepublish": "tsc",
   "keywords": [
     "webaudio",

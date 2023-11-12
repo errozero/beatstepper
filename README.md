@@ -10,11 +10,11 @@ Install Beatstepper:
 
 Create an instance and pass in a web audio context, and a callback function:
 
-```javascript
-import  Beatstepper  from  '@errozero/beatstepper';
+```typescript
+import { Beatstepper, IBeatstepperCallbackData } from '@errozero/beatstepper';
 
 const ctx = new AudioContext();
-const callback = data => {
+const callback = (data:IBeatstepperCallbackData) => {
 	console.log('Step!', data);
 };
 
@@ -22,7 +22,7 @@ const beatstepper= new Beatstepper(ctx, callback);
 ```
 
 Now that is setup, call the start method to begin scheduling:
-```javascript
+```typescript
 beatstepper.start()
 ```
 
@@ -89,14 +89,14 @@ Param: `beats:number`
 beatstepper.setBeatsPerBar(4);
 ```
 ## Metronome example
-```javascript
-import  Beatstepper  from  '@errozero/beatstepper';
+```typescript
+import { Beatstepper, IBeatstepperCallbackData } from '@errozero/beatstepper';
 
 const context = new AudioContext();
 const stepsPerBeat = 4;
 const tempo = 90;
 
-const  callback = data => {
+const  callback = (data:IBeatstepperCallbackData) => {
 	const  freq = (data.step % stepsPerBeat == 0) ? 880 : 440;
 	const  oscillator = context.createOscillator();
 	oscillator.type = 'square';

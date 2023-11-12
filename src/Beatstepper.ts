@@ -2,7 +2,7 @@
 
 import tempoWorker from './worker';
 
-interface IBeatstepperCallbackData {
+export interface IBeatstepperCallbackData {
     step: number,
     beat: number,
     bar: number,
@@ -10,7 +10,7 @@ interface IBeatstepperCallbackData {
     stepLength: number
 }
 
-class Beatstepper {
+export class Beatstepper {
     
     private context: AudioContext;
     private callback: Function;
@@ -147,7 +147,26 @@ class Beatstepper {
         return this.stepLength;
     }
 
-}
+    getScheduleAheadTime(){
+        return this.scheduleAheadTime;
+    }
 
-export {Beatstepper, IBeatstepperCallbackData};
-export default Beatstepper;
+    /**
+     * @param time in seconds
+     */
+    setScheduleAheadTime(time:number){
+        this.scheduleAheadTime = time;
+    }
+
+    getLookAhead(){
+        return this.lookAhead;
+    }
+
+    /**
+     * @param time in milliseconds
+     */
+    setLookAhead(time:number){
+        this.lookAhead = time;
+    }
+
+}
