@@ -91,7 +91,9 @@ export class Beatstepper {
             return;
         }
 
+        //Context must not be in paused state, so attempt to resume here
         this.context.resume();
+
         this.playing = true;
         this.nextStepTime = this.context.currentTime;
         this.tempoWorker.postMessage({
