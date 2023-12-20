@@ -91,6 +91,7 @@ export class Beatstepper {
             return;
         }
 
+        this.context.resume();
         this.playing = true;
         this.nextStepTime = this.context.currentTime;
         this.tempoWorker.postMessage({
