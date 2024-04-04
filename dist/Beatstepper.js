@@ -66,7 +66,7 @@ var Beatstepper = /** @class */ (function () {
         //Context must not be in paused state, so attempt to resume here
         this.context.resume();
         this.playing = true;
-        this.nextStepTime = this.context.currentTime;
+        this.nextStepTime = this.context.currentTime + this.scheduleAheadTime;
         this.tempoWorker.postMessage({
             message: 'start',
             speed: this.lookAhead,

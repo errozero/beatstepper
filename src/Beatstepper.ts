@@ -95,7 +95,7 @@ export class Beatstepper {
         this.context.resume();
 
         this.playing = true;
-        this.nextStepTime = this.context.currentTime;
+        this.nextStepTime = this.context.currentTime + this.scheduleAheadTime;
         this.tempoWorker.postMessage({
             message: 'start',
             speed: this.lookAhead,
