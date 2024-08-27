@@ -172,4 +172,8 @@ export class Beatstepper {
         this.lookAhead = time;
     }
 
+    getPlaying(){
+        return this.playing;
+    }
+
 }
