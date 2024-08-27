@@ -45,4 +45,5 @@ export declare class Beatstepper {
      * @param time in milliseconds
      */
     setLookAhead(time: number): void;
+    getPlaying(): boolean;
 }

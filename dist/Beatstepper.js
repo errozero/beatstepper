@@ -128,6 +128,9 @@ var Beatstepper = /** @class */ (function () {
     Beatstepper.prototype.setLookAhead = function (time) {
         this.lookAhead = time;
     };
+    Beatstepper.prototype.getPlaying = function () {
+        return this.playing;
+    };
     return Beatstepper;
 }());
 export { Beatstepper };
