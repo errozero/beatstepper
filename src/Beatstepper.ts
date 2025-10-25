@@ -89,7 +89,7 @@ export class Beatstepper {
             }
         };
         osc.start(data.startTime);
-        osc.stop(data.startTime + 0.001);
+        osc.stop(data.startTime + 0.005);
     }
 
     private nextStep() {
