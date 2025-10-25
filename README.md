@@ -130,7 +130,11 @@ const callback = (data: IBeatstepperCallbackData) => {
     oscillator.stop(data.startTime + data.stepLength / 2);
 };
 
-const beatstepper = new Beatstepper(context, callback);
+const animCallback = (data: IBeatstepperCallbackData) => {
+    //Update any visual position markers etc in here and it will be synced to the audio
+};
+
+const beatstepper = new Beatstepper(context, callback, animCallback);
 
 beatstepper.setTempo(tempo);
 beatstepper.setStepsPerBeat(stepsPerBeat);
