@@ -5,7 +5,7 @@
     "url": "https://github.com/errozero/beatstepper"
   },
   "type": "module",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "",
   "exports": {
     ".": "./dist/index.js"
