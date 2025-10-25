@@ -27,7 +27,7 @@ const animationCallback = (data: IBeatstepperCallbackData) => {
     console.log("Animation Step!", data);
 };
 
-const beatstepper = new Beatstepper(ctx, callback, animationCallback);
+const beatstepper = new Beatstepper(ctx, audioCallback, animationCallback);
 ```
 
 Now that is setup, call the start method to begin scheduling:
