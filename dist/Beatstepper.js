@@ -60,7 +60,7 @@ var Beatstepper = /** @class */ (function () {
             }
         };
         osc.start(data.startTime);
-        osc.stop(data.startTime + 0.008);
+        osc.stop(data.startTime + 0.005);
     };
     Beatstepper.prototype.nextStep = function () {
         if (!this.playing)
