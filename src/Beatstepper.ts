@@ -1,20 +1,22 @@
 //Based on article: https://html5rocks.com/en/tutorials/audio/scheduling/
 
-import tempoWorker from './worker';
+import tempoWorker from "./worker";
+
+type BeatstepperCallback = (data: IBeatstepperCallbackData) => void;
 
 export interface IBeatstepperCallbackData {
-    step: number,
-    beat: number,
-    bar: number,
-    startTime: number,
-    stepLength: number
+    step: number;
+    beat: number;
+    bar: number;
+    startTime: number;
+    stepLength: number;
 }
 
 export class Beatstepper {
-    
     private context: AudioContext;
-    private callback: Function;
-    
+    private callback: BeatstepperCallback;
+    private animationCallback?: BeatstepperCallback;
+
     private tempoWorker: Worker;
     private scheduleAheadTime = 0.18; //How far ahead to schedule events (in seconds)
     private lookAhead = 20.0; //How frequently to call scheduling (in ms)
@@ -24,70 +26,97 @@ export class Beatstepper {
     private currentBar = 0;
     private playing = false;
     private stepLength = 0.12;
-    
+
     private tempo = 130;
     private stepsPerBeat = 4;
     private beatsPerBar = 4;
 
-    constructor(context: AudioContext, callback: Function){
+    constructor(
+        context: AudioContext,
+        audioCallback: BeatstepperCallback,
+        animationCallback?: BeatstepperCallback
+    ) {
         this.context = context;
-        this.callback = callback;
+        this.callback = audioCallback;
+
+        if (animationCallback) {
+            this.animationCallback = animationCallback;
+        }
+
         this.setStepLength();
-        
+
         this.tempoWorker = tempoWorker;
-        this.tempoWorker.postMessage({speed: this.lookAhead});
-        this.tempoWorker.onmessage = () => {this.scheduler()};
+        this.tempoWorker.postMessage({ speed: this.lookAhead });
+        this.tempoWorker.onmessage = () => {
+            this.scheduler();
+        };
     }
 
-    private setStepLength(){
-        this.stepLength = (60.0 / this.tempo) / this.stepsPerBeat;
+    private setStepLength() {
+        this.stepLength = 60.0 / this.tempo / this.stepsPerBeat;
     }
 
-    private scheduler(){
-        while(this.nextStepTime < this.context.currentTime + this.scheduleAheadTime ) {
-            if(!this.playing) return;
+    private scheduler() {
+        while (this.nextStepTime < this.context.currentTime + this.scheduleAheadTime) {
+            if (!this.playing) return;
             this.scheduleStep();
             this.nextStep();
         }
     }
 
-    private scheduleStep(){
-        let data : IBeatstepperCallbackData = {
+    private scheduleStep() {
+        let data: IBeatstepperCallbackData = {
             step: this.currentStep,
             beat: this.currentBeat,
             bar: this.currentBar,
             startTime: this.nextStepTime,
-            stepLength: this.stepLength
+            stepLength: this.stepLength,
         };
 
         this.callback(data);
+        this.scheduleAnimationCallback(data);
     }
 
-    private nextStep(){
-        if(!this.playing) return;
+    private scheduleAnimationCallback(data: IBeatstepperCallbackData) {
+        if (!this.animationCallback) {
+            return;
+        }
+
+        const osc = this.context.createOscillator();
+        osc.onended = () => {
+            if (this.animationCallback && this.playing) {
+                this.animationCallback(data);
+            }
+        };
+        osc.start(data.startTime);
+        osc.stop(data.startTime + 0.008);
+    }
+
+    private nextStep() {
+        if (!this.playing) return;
 
         let maxStep = this.stepsPerBeat * this.beatsPerBar;
 
         this.nextStepTime += this.stepLength;
-        
+
         this.currentStep++;
 
-        if(this.currentStep == maxStep){
+        if (this.currentStep == maxStep) {
             this.currentStep = 0;
             this.currentBar++;
         }
-        
-        if(this.currentStep % this.stepsPerBeat == 0){
+
+        if (this.currentStep % this.stepsPerBeat == 0) {
             this.currentBeat++;
 
-            if(this.currentBeat == this.beatsPerBar){
+            if (this.currentBeat == this.beatsPerBar) {
                 this.currentBeat = 0;
             }
         }
     }
 
-    start(){
-        if(this.playing){
+    start() {
+        if (this.playing) {
             return;
         }
 
@@ -97,83 +126,82 @@ export class Beatstepper {
         this.playing = true;
         this.nextStepTime = this.context.currentTime + this.scheduleAheadTime;
         this.tempoWorker.postMessage({
-            message: 'start',
+            message: "start",
             speed: this.lookAhead,
         });
     }
 
-    stop(){
-        if(!this.playing){
+    stop() {
+        if (!this.playing) {
             return;
         }
-        
+
         this.playing = false;
-        this.tempoWorker.postMessage({message: 'stop'});
+        this.tempoWorker.postMessage({ message: "stop" });
         this.currentStep = 0;
         this.currentBar = 0;
         this.nextStepTime = 0;
     }
 
-    pause(){
+    pause() {
         this.playing = false;
-        this.tempoWorker.postMessage({message: 'stop'});
+        this.tempoWorker.postMessage({ message: "stop" });
     }
 
-    getStepsPerBeat(){
+    getStepsPerBeat() {
         return this.stepsPerBeat;
     }
 
-    setStepsPerBeat(steps:number){
+    setStepsPerBeat(steps: number) {
         this.stepsPerBeat = steps;
         this.setStepLength();
     }
 
-    getBeatsPerBar(){
+    getBeatsPerBar() {
         return this.beatsPerBar;
     }
 
-    setBeatsPerBar(beats:number){
+    setBeatsPerBar(beats: number) {
         this.beatsPerBar = beats;
         this.setStepLength();
     }
 
-    getTempo(){
+    getTempo() {
         return this.tempo;
     }
 
-    setTempo(tempo:number){
+    setTempo(tempo: number) {
         this.tempo = tempo;
         this.setStepLength();
     }
 
-    getStepLength(){
+    getStepLength() {
         return this.stepLength;
     }
 
-    getScheduleAheadTime(){
+    getScheduleAheadTime() {
         return this.scheduleAheadTime;
     }
 
     /**
      * @param time in seconds
      */
-    setScheduleAheadTime(time:number){
+    setScheduleAheadTime(time: number) {
         this.scheduleAheadTime = time;
     }
 
-    getLookAhead(){
+    getLookAhead() {
         return this.lookAhead;
     }
 
     /**
      * @param time in milliseconds
      */
-    setLookAhead(time:number){
+    setLookAhead(time: number) {
         this.lookAhead = time;
     }
 
-    getPlaying(){
+    getPlaying() {
         return this.playing;
     }
-
 }

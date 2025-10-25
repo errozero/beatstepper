@@ -1,7 +1,7 @@
 //Based on article: https://html5rocks.com/en/tutorials/audio/scheduling/
-import tempoWorker from './worker';
+import tempoWorker from "./worker";
 var Beatstepper = /** @class */ (function () {
-    function Beatstepper(context, callback) {
+    function Beatstepper(context, audioCallback, animationCallback) {
         var _this = this;
         this.scheduleAheadTime = 0.18; //How far ahead to schedule events (in seconds)
         this.lookAhead = 20.0; //How frequently to call scheduling (in ms)
@@ -15,14 +15,19 @@ var Beatstepper = /** @class */ (function () {
         this.stepsPerBeat = 4;
         this.beatsPerBar = 4;
         this.context = context;
-        this.callback = callback;
+        this.callback = audioCallback;
+        if (animationCallback) {
+            this.animationCallback = animationCallback;
+        }
         this.setStepLength();
         this.tempoWorker = tempoWorker;
         this.tempoWorker.postMessage({ speed: this.lookAhead });
-        this.tempoWorker.onmessage = function () { _this.scheduler(); };
+        this.tempoWorker.onmessage = function () {
+            _this.scheduler();
+        };
     }
     Beatstepper.prototype.setStepLength = function () {
-        this.stepLength = (60.0 / this.tempo) / this.stepsPerBeat;
+        this.stepLength = 60.0 / this.tempo / this.stepsPerBeat;
     };
     Beatstepper.prototype.scheduler = function () {
         while (this.nextStepTime < this.context.currentTime + this.scheduleAheadTime) {
@@ -38,9 +43,24 @@ var Beatstepper = /** @class */ (function () {
             beat: this.currentBeat,
             bar: this.currentBar,
             startTime: this.nextStepTime,
-            stepLength: this.stepLength
+            stepLength: this.stepLength,
         };
         this.callback(data);
+        this.scheduleAnimationCallback(data);
+    };
+    Beatstepper.prototype.scheduleAnimationCallback = function (data) {
+        var _this = this;
+        if (!this.animationCallback) {
+            return;
+        }
+        var osc = this.context.createOscillator();
+        osc.onended = function () {
+            if (_this.animationCallback && _this.playing) {
+                _this.animationCallback(data);
+            }
+        };
+        osc.start(data.startTime);
+        osc.stop(data.startTime + 0.008);
     };
     Beatstepper.prototype.nextStep = function () {
         if (!this.playing)
@@ -68,7 +88,7 @@ var Beatstepper = /** @class */ (function () {
         this.playing = true;
         this.nextStepTime = this.context.currentTime + this.scheduleAheadTime;
         this.tempoWorker.postMessage({
-            message: 'start',
+            message: "start",
             speed: this.lookAhead,
         });
     };
@@ -77,14 +97,14 @@ var Beatstepper = /** @class */ (function () {
             return;
         }
         this.playing = false;
-        this.tempoWorker.postMessage({ message: 'stop' });
+        this.tempoWorker.postMessage({ message: "stop" });
         this.currentStep = 0;
         this.currentBar = 0;
         this.nextStepTime = 0;
     };
     Beatstepper.prototype.pause = function () {
         this.playing = false;
-        this.tempoWorker.postMessage({ message: 'stop' });
+        this.tempoWorker.postMessage({ message: "stop" });
     };
     Beatstepper.prototype.getStepsPerBeat = function () {
         return this.stepsPerBeat;

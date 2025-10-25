@@ -1,3 +1,4 @@
+type BeatstepperCallback = (data: IBeatstepperCallbackData) => void;
 export interface IBeatstepperCallbackData {
     step: number;
     beat: number;
@@ -8,6 +9,7 @@ export interface IBeatstepperCallbackData {
 export declare class Beatstepper {
     private context;
     private callback;
+    private animationCallback?;
     private tempoWorker;
     private scheduleAheadTime;
     private lookAhead;
@@ -20,10 +22,11 @@ export declare class Beatstepper {
     private tempo;
     private stepsPerBeat;
     private beatsPerBar;
-    constructor(context: AudioContext, callback: Function);
+    constructor(context: AudioContext, audioCallback: BeatstepperCallback, animationCallback?: BeatstepperCallback);
     private setStepLength;
     private scheduler;
     private scheduleStep;
+    private scheduleAnimationCallback;
     private nextStep;
     start(): void;
     stop(): void;
@@ -47,3 +50,4 @@ export declare class Beatstepper {
     setLookAhead(time: number): void;
     getPlaying(): boolean;
 }
+export {};

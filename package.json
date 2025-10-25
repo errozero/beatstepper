@@ -21,5 +21,8 @@
     "webaudio",
     "scheduler",
     "web audio"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
 }
